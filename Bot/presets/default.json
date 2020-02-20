@@ -1,0 +1,17 @@
+{
+    "categories": [
+        {"name": "general", "position": 99},
+        {"name": "admin", "position": 10, "permissions": [
+            {"deny": ["SEND_MESSAGES", "READ_MESSAGES", "VIEW_CHANNEL"], "role":"@everyone"},
+            {"allow": ["SEND_MESSAGES", "READ_MESSAGES", "VIEW_CHANNEL"], "role":"Administrator"}
+        ]}
+    ],
+    "channels": [
+        {"name": "general", "type": "text", "category": "general"},
+        {"name": "nsfw", "type": "text"},
+        {"name": "memes", "type": "text"}
+    ],
+    "roles": [
+        {"name": "Admin", "permissions": ["ADMINISTRATOR"]}
+    ]
+}
