@@ -1,0 +1,11 @@
+{
+    "roles": [
+        {"name": "Admin", "color": "#d60404", "hoist": true, "position": 10, "mentionable": true, "permissions": ["ADMINISTRATOR"]}
+    ],
+    "categories": [
+        {"name": "general", "position": 99}
+    ],
+    "channels": [
+        {"name": "general", "type": "text", "category": "general"}
+    ]
+}
