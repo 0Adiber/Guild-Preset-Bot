@@ -20,6 +20,12 @@ module.exports.run = async(message) => {
         let setup = require('../presets/default.json');
 
         //creating roles FIRST!
+        for(let role in setup.roles) {
+            if(setup.roles.hasOwnProperty(role)) {
+                Promise.all(message.guild.createRole(role))
+                        .catch(message.reply("The preset you chose has some errors! Please contact me on my Discord TheMurli (gg.adiber.at)"));
+            }
+        }
 
         //creating the categories SECOND!
         for(let cat in setup.categories) {
@@ -33,7 +39,8 @@ module.exports.run = async(message) => {
                     }
                 }
 
-                message.guild.createChannel(setup.categories[cat].name, {"type": "category", "name": setup.categories[cat].name, "position": setup.categories[cat].position, "permissionOverwrites": perm}, "", "Channel by Server Preset Bot");
+                Promise.all(message.guild.createChannel(setup.categories[cat].name, {"type": "category", "name": setup.categories[cat].name, "position": setup.categories[cat].position, "permissionOverwrites": perm}, "", "Channel by Server Preset Bot"))
+                        .catch(message.reply("The preset you chose has some errors! Please contact me on my Discord TheMurli (gg.adiber.at)"));
             }
         }
 
