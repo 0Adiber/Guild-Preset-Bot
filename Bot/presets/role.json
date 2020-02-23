@@ -1,0 +1,7 @@
+{
+    "roles": [
+        {"name": "Admin", "color": "#d60404", "position": 100, "hoist": true, "mentionable": true, "permissions": ["ADMINISTRATOR"]},
+        {"name": "mod", "color": "#d604ff", "position": 20, "hoist": true, "mentionable": true, "permissions": ["ADMINISTRATOR"]},
+        {"name": "sup", "color": "#d6ff04", "position": 50, "hoist": true, "mentionable": true, "permissions": ["ADMINISTRATOR"]}
+    ]
+}

@@ -1,18 +1,21 @@
 {
     "roles": [
-        {"name": "Admin", "color": "#d60404", "hoist": true, "position": 10, "mentionable": true, "permissions": ["ADMINISTRATOR"]}
+        {"name": "Admin", "color": "#d60404", "position": 100, "hoist": true, "mentionable": true, "permissions": ["ADMINISTRATOR"]}
     ],
     "categories": [
-        {"name": "general", "position": 99},
-        {"name": "admin", "position": 10, "permissions": [
+        {"name": "general", "position": 2},
+        {"name": "admin", "position": 1, "permissions": [
             {"deny": ["SEND_MESSAGES", "READ_MESSAGES", "VIEW_CHANNEL"], "role":"@everyone"},
             {"allow": ["SEND_MESSAGES", "READ_MESSAGES", "VIEW_CHANNEL"], "role":"Admin"}
         ]}
     ],
     "channels": [
-        {"name": "general", "type": "text", "category": "general"},
-        {"name": "nsfw", "type": "text", "nsfw": true, "category": "general"},
-        {"name": "memes", "type": "text", "category": "general"},
-        {"name": "talk", "type": "voice", "category": "general", "userLimit": 10}
-    ]
+        {"name": "general", "type": "text", "position": 2, "category": "general"},
+        {"name": "nsfw", "type": "text", "position": 6, "nsfw": true, "category": "general"},
+        {"name": "memes", "type": "text", "position": 5, "category": "general"}
+    ],
+    "general": {
+        "afkChannel": "talk",
+        "afkTimeout": 300
+    }
 }
