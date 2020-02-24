@@ -22,15 +22,16 @@ module.exports.run = async(message) => {
         
         //default setup
         if(arg == "") {
+            arg = "default"
             setup = require('../presets/default.json');
         } else {
             setup = require(`../presets/${arg}.json`)
         }
         
-        debug.send("Starting... 🦄");
         if(!Object.keys(setup).length) return message.reply("This preset does not exist!");
+        
+        debug.send(`Starting '${arg}' 🦄`);
         await sleep(3000);
-
 
         let pendingPromises = []
         //CREATING roles FIRST!
@@ -42,16 +43,6 @@ module.exports.run = async(message) => {
                             debug.send("The preset you chose has some errors! Please contact me on my Discord [gg.adiber.at] (1)")
                             console.log(err)
                         }));
-            }
-        }
-        await Promise.all(pendingPromises);
-        pendingPromises = []
-        //UPDATING ROLE POSITIONS
-        debug.send("Updating Role Positions");
-        for(let role in setup.roles) {
-            if(setup.roles.hasOwnProperty(role)) {
-                pendingPromises.push(message.guild.roles.find(val => val.name === setup.roles[role].name).setPosition(setup.roles[role].position));
-                console.log(message.guild.roles.find(val => val.name === setup.roles[role].name).name + " -> " + setup.roles[role].position)
             }
         }
 
@@ -75,15 +66,7 @@ module.exports.run = async(message) => {
                             debug.send("The preset you chose has some errors! Please contact me on my Discord [gg.adiber.at] (2)")
                             console.log(err)
                         }));
-            }
-        }
-        await Promise.all(pendingPromises);
-        pendingPromises = [];
-        //UPDATING category positions!
-        debug.send("Updating Category Positions");
-        for(let cat in setup.categories) {
-            if(setup.categories.hasOwnProperty(cat)) {
-                pendingPromises.push(message.guild.channels.find(val => (val.name === setup.categories[cat].name && val.type === 'category')).setPosition(setup.categories[cat].position));
+                
             }
         }
 
@@ -106,26 +89,30 @@ module.exports.run = async(message) => {
     
                 let cat = message.guild.channels.findKey(c => (c.type === "category" && c.name === setup.channels[chan].category));
     
-                pendingPromises.push(message.guild.createChannel(setup.channels[chan].name, {"type": setup.channels[chan].type, "name": setup.channels[chan].name, "position": setup.channels[chan].position, "nsfw": (setup.channels[chan].nsfw || false), "parent": cat, "userLimit": (setup.channels[chan].userLimit || 0), "permissionOverwrites": perm})
-                        .catch(err => {
-                            debug.send("The preset you chose has some errors! Please contact me on my Discord [gg.adiber.at] (3)")
-                            console.log(err)
-                        }));
-            }
-        }
-        await Promise.all(pendingPromises);
-        pendingPromises = [];
-        //UPDATING channel positions!
-        debug.send("Updating Channel Positions");
-        for(let chan in setup.channels) {
-            if(setup.channels.hasOwnProperty(chan)) {
-                pendingPromises.push(message.guild.channels.find(val => (val.name === setup.channels[chan].name && val.type !== 'category')).setPosition(setup.channels[chan].position));
+                pendingPromises.push(message.guild.createChannel(setup.channels[chan].name, {'type': setup.channels[chan].type, 'permissionOverwrites': perm})
+                                        .then(channel => {
+                                            channel.setParent(message.guild.channels.find(c => c.name == setup.channels[chan].category && c.type == "category"))
+                                                .catch(err => console.log(err))
+                                                .finally(() => {
+                                                    channel.setPosition(setup.channels[chan].position)
+                                                        .catch(err => console.log(err))
+                                                        .finally(() => {
+                                                            if(channel.type === 'text')
+                                                                channel.setNSFW(setup.channels[chan].nsfw || false);
+                                                            else
+                                                                channel.setUserLimit(setup.channels[chan].userLimit || 0);
+                                                        });
+                                                });
+
+                                        }));
+
             }
         }
 
         await Promise.all(pendingPromises);
         pendingPromises = [];
         
+        debug.send("Setting General Settings");
         message.guild.setAFKChannel(message.guild.channels.find(val => (val.type === 'voice' && val.name === setup.general.afkChannel)))
                         .catch((err) => console.log(err));
         message.guild.setAFKTimeout((setup.general.afkTimeout || 5*60))

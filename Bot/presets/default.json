@@ -10,9 +10,10 @@
         ]}
     ],
     "channels": [
-        {"name": "general", "type": "text", "position": 2, "category": "general"},
-        {"name": "nsfw", "type": "text", "position": 6, "nsfw": true, "category": "general"},
-        {"name": "memes", "type": "text", "position": 5, "category": "general"}
+        {"name": "general", "type": "text", "position": 1, "category": "general"},
+        {"name": "nsfw", "type": "text", "position": 3, "nsfw": true, "category": "general"},
+        {"name": "memes", "type": "text", "position": 2, "category": "general"},
+        {"name": "talk1", "type": "voice", "position": 0, "category": "general", "userLimit": 10}
     ],
     "general": {
         "afkChannel": "talk",

@@ -25,14 +25,15 @@ module.exports.run = async(message) => {
     //get the Roles
     let ttemp = []
     message.guild.roles.array().forEach((r, _) => {
-        ttemp.push({
-            'name': r.name,
-            'color': r.color,
-            'hoist': r.hoist,
-            'position': r.position,
-            'mentionable': r.mentionable,
-            'permissions': r.permissions
-        });
+        if(r.id !== message.guild.defaultRole.id)
+            ttemp.push({
+                'name': r.name,
+                'color': r.color,
+                'hoist': r.hoist,
+                'position': r.position,
+                'mentionable': r.mentionable,
+                'permissions': r.permissions
+            });
     });
     setup.roles = ttemp;
 
@@ -80,7 +81,7 @@ module.exports.run = async(message) => {
             'name': c.name,
             'type': c.type,
             'position': c.position,
-            'parent': (c.parent == null ? null : c.parent.name),
+            'category': (c.parent == null ? null : c.parent.name),
             'nsfw': c.nsfw,
             'userLimit': (c.userLimit || 0),
             'permissions': perm
