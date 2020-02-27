@@ -20,6 +20,11 @@ sql = '''CREATE TABLE IF NOT EXISTS emojis (
 
 mycursor.execute(sql)
 
+for (root,_, f) in os.walk('./'):
+  for filename in f:
+    new = filename.replace("-", "_")
+    if new != filename:
+      os.rename(root + os.sep + filename, root + os.sep + new)
 
 for ddir in os.listdir(os.getcwd()):
     if os.path.isdir(ddir):

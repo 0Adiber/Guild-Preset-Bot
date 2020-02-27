@@ -1,7 +1,0 @@
-1. server to .json
-2. emoji datenbank für emoji presets
-	a) einzeln
-	b) als set
-3. webseite
-4. option, dass alle alten roles wegnehmen und channels verstecken, aber nicht löschen
-5. "packs" z.b. "admin stuff" -> nur admin channels..
