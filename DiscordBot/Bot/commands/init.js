@@ -11,8 +11,10 @@ module.exports.run = async(message) => {
 
     //delete roles, channels and emojis
     await Promise.all(message.guild.roles.filter(val => val.id !== message.guild.defaultRole.id).deleteAll()).catch((err) => console.log(err));
-    await Promise.all(message.guild.emojis.deleteAll()).catch((err) => console.log(err));
     await Promise.all(message.guild.channels.deleteAll()).catch((err) => console.log(err));
+    let promises = [];
+    [...message.guild.emojis.values()].forEach(e => promises.push(message.guild.deleteEmoji(e, "Deleted by Guild Preset Bot")));
+    await Promise.all(promises).catch(err => console.log(err));
 
     message.guild.createChannel("debug", {'type': 'text'}).then(async(debug) => {
 
@@ -117,7 +119,7 @@ module.exports.run = async(message) => {
                         .catch((err) => console.log(err));
         message.guild.setAFKTimeout((setup.general.afkTimeout || 5*60))
                         .catch((err) => console.log(err));
-    });
+    }).catch(err => console.log(err));
     
 }
 

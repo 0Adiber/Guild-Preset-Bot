@@ -3,6 +3,8 @@ require('dotenv').config();
 const fs = require('fs');
 const colors = require('colors');
 
+const tools = require('./tools');
+
 const client = new Discord.Client();
 
 //Command Handler
@@ -26,8 +28,6 @@ class Bot {
         this.prefix = prefix;
         this.color = color;
 
-        this.servers = new Set();
-
         this.start();
     }
 
@@ -43,10 +43,13 @@ class Bot {
             client.user.setPresence({game: {name: 'by Adiber', type: 'WATCHING', url: 'https://adiber.at'}, status: 'dnd'}).catch(err => console.log(err));
 
             client.guilds.array().forEach((guild) => {
-                this.servers.add(guild.id);
+                tools.setServer(guild.id, false);
                 this.logger('+ '.green + guild.name);
             });
-            this.logger("Servers: ".underline.yellow + this.servers.size);
+            this.logger("Servers: ".underline.yellow + tools.getServerSize());
+
+            tools.usCount(client.guilds.array()); //do it once and then after interval
+            setInterval(() => tools.usCount(client.guilds.array()), 3600*1000); //1 hour
         });
 
         //messages
@@ -57,6 +60,10 @@ class Bot {
             //check for prefix
             if(!msg.content.trim().startsWith(this.prefix)) return;
 
+            //check if already executing command
+            if(tools.getServer(msg.guild.id))
+                return msg.reply("Sorry, but the Server is already executing a command!");
+
             //get command
             let cmd = msg.content.trim().substr(this.prefix.length).split(' ')[0];
 
@@ -64,44 +71,29 @@ class Bot {
             let commandfile = client.commands.get(cmd);
             if(!commandfile) return;
             try {
+                //tools.setServer(msg.guild.id, true)
                 commandfile.run(msg);
+                //tools.setServer(msg.guild.id, false)
             } catch(err) {
                 this.logger(colors.red.bold(err));
             }
         });
 
-        //message update => do same as if message
-        client.on('messageUpdate', (_,msg) => {
-            //dont respond to own messages
-            if(msg.author.id == client.user.id) return;
-
-            //check for prefix
-            if(!msg.content.trim().startsWith(this.prefix)) return;
-
-            //get command
-            cmd = msg.content.trim().substr(this.prefix.length).split(' ')[0];
-
-            //execute right command file
-            let commandfile = client.commands.get(cmd);
-            if(!commandfile) return;
-            try {
-                commandfile.run(msg);
-            } catch(err) {
-                this.logger(err);
-            }
-        });
-
         //bot joins server
         client.on('guildCreate', guild => {
-            this.servers.add(guild.id);
+            tools.setServer(guild.id,false);
             this.logger('+ '.green + guild.name);
         });
 
         //bot leaves/gets kicked from server
         client.on('guildDelete', guild => {
-            this.servers.delete(guild.id);
+            tools.removeServer(guild.id);
             this.logger('- '.red + guild.name);
         });
+
+        client.on('rateLimit', (info) => {
+            console.log(`Hit Rate Limit: ${info.limit} - Method: ${info.method} - Time: ${info.timeDifference}`)
+        });      
 
     }
 
