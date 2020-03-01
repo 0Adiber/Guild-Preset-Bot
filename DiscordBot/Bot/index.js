@@ -43,7 +43,7 @@ class Bot {
             client.user.setPresence({game: {name: 'by Adiber', type: 'WATCHING', url: 'https://adiber.at'}, status: 'dnd'}).catch(err => console.log(err));
 
             client.guilds.array().forEach((guild) => {
-                tools.setServer(guild.id, false);
+                tools.setServer(guild.id, {init: 0, emoji: 0, isexec: false});
                 this.logger('+ '.green + guild.name);
             });
             this.logger("Servers: ".underline.yellow + tools.getServerSize());
@@ -61,7 +61,7 @@ class Bot {
             if(!msg.content.trim().startsWith(this.prefix)) return;
 
             //check if already executing command
-            if(tools.getServer(msg.guild.id))
+            if(tools.getServer(msg.guild.id).isexec)
                 return msg.reply("Sorry, but the Server is already executing a command!");
 
             //get command
@@ -71,9 +71,8 @@ class Bot {
             let commandfile = client.commands.get(cmd);
             if(!commandfile) return;
             try {
-                //tools.setServer(msg.guild.id, true)
+                tools.setServer(msg.guild.id, {...tools.getServer(msg.guild.id), isexec: true});
                 commandfile.run(msg);
-                //tools.setServer(msg.guild.id, false)
             } catch(err) {
                 this.logger(colors.red.bold(err));
             }

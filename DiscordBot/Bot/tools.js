@@ -2,8 +2,10 @@ const fs = require('fs');
 
 var servers = new Map();
 
-const setServer = (gid, bool) => {
-    servers.set(gid, bool)
+//options = {}; contains: init: <int>, emoji: <int>, isexec: <bool>, (premium: <bool>, init-reset: <long>, emoji-reset: <long>) // if not premium: init only once, emoji three times; else those things every 24 hours
+
+const setServer = (gid, options) => {
+    servers.set(gid, options)
 }
 
 const getServer = (gid) => {

@@ -1,4 +1,5 @@
 const fs = require('fs');
+const tools = require('../tools');
 
 module.exports.run = async(message) => {
     if(!message.member.permissions.has("ADMINISTRATOR", true)) return message.reply('You do not have the rights to do that!');
@@ -9,14 +10,18 @@ module.exports.run = async(message) => {
         return;
     }
 
+    //check if already used
+    if(tools.getServer(message.guild.id).init > 0)
+        return message.reply("Sorry, but you already used that command!")
+
     //delete roles, channels and emojis
     await Promise.all(message.guild.roles.filter(val => val.id !== message.guild.defaultRole.id).deleteAll()).catch((err) => console.log(err));
     await Promise.all(message.guild.channels.deleteAll()).catch((err) => console.log(err));
-    let promises = [];
-    [...message.guild.emojis.values()].forEach(e => promises.push(message.guild.deleteEmoji(e, "Deleted by Guild Preset Bot")));
-    await Promise.all(promises).catch(err => console.log(err));
+    //cannot delete emojis, because the cooldown on this is sooo big
 
     message.guild.createChannel("debug", {'type': 'text'}).then(async(debug) => {
+
+        debug.send(`Deleted Channels & Roles; You have to delete Emojis on your own!`);
 
         let arg = message.content.trim().split(' ')[1] || "";
         
@@ -32,8 +37,10 @@ module.exports.run = async(message) => {
         
         if(!Object.keys(setup).length) return message.reply("This preset does not exist!");
         
+        //set to already used
+        tools.setServer(message.guild.id, {...tools.getServer(message.guild.id), init: 1})
+
         debug.send(`Starting '${arg}' 🦄`);
-        await sleep(3000);
 
         let pendingPromises = []
         //CREATING roles FIRST!
@@ -45,6 +52,7 @@ module.exports.run = async(message) => {
                             debug.send("The preset you chose has some errors! Please contact me on my Discord [gg.adiber.at] (1)")
                             console.log(err)
                         }));
+                await sleep(700)
             }
         }
 
@@ -69,6 +77,7 @@ module.exports.run = async(message) => {
                             console.log(err)
                         }));
                 
+                await sleep(400)
             }
         }
 
@@ -107,7 +116,8 @@ module.exports.run = async(message) => {
                                                 });
 
                                         }));
-
+                
+                await sleep(400)
             }
         }
 
@@ -119,6 +129,9 @@ module.exports.run = async(message) => {
                         .catch((err) => console.log(err));
         message.guild.setAFKTimeout((setup.general.afkTimeout || 5*60))
                         .catch((err) => console.log(err));
+
+        //set exec to false
+        tools.setServer(message.guild.id, {...tools.getServer(message.guild.id), exec: false})
     }).catch(err => console.log(err));
     
 }
