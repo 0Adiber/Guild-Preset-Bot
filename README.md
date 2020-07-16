@@ -1,7 +1,7 @@
 # Guild-Preset-Bot
 
 This Bot installs Server Presets, so that you have less work to do.
-
+Sadly enough this is now a thing within Discord itself & it does hardly work anyways, because the Bots have a lot of restriction when it comes to how many requests you can send within X amount of time. Otherwise this would have been a cool Project.
   
 
 ## Commands
