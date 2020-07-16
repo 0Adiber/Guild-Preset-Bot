@@ -60,9 +60,9 @@ Sadly enough this is now a thing within Discord itself & it does hardly work any
 ## TODO
 - [x] Load Preset onto Server
 - [x] Existing Server to '.json'-Preset
-- [ ] Emoji Datenbank für Emoji Presets
-    - [ ] einzeln
-    - [ ] als Set
+- [x] Emoji Datenbank für Emoji Presets
+    - [x] einzeln
+    - [x] als Set
 - [ ] Webseite zum Ansehen / Erklärung
 - [ ] Option: Roles wegnehmen & Channels unsichtbar -> jedoch nicht löschen
 - [ ] "Packs" z.B. "admin stuff" --> nur admin channels, etc.
